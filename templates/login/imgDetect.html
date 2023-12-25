@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% block title %}图片检测{% endblock %}
+{% block content %}
+    {% if request.session.is_login %}
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Title</title>
+            <style>
+
+                .tab-cont {
+                    display: none;
+                    position: relative;
+                }
+
+                .demo-rs {
+                    width: 590px;
+                    height: 408px;
+                    box-sizing: border-box;
+                    border: 1px solid #d5d5d5;
+                    vertical-align: top;
+                    position: relative;
+                    overflow-y: auto;
+                }
+
+                .demo-rs .jmod-result {
+                    width: 100%;
+                    height: 100%;
+                    box-sizing: border-box;
+                    padding: 20px 46px 44px;
+                    overflow-y: auto;
+                }
+
+                .demo-rs-label {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    padding: 10px 16px;
+                    background-color: #e6fafd;
+                    color: gray;
+                    border: 1px solid #d5d5d5;
+                    border-width: 0 1px 1px 0;
+                    line-height: 1;
+                }
+
+                .demo-rs-label {
+                    z-index: 10;
+                }
+
+                .demo-box {
+                    font-size: 14px;
+                    display: inline-block;
+                    box-sizing: border-box;
+                    margin: 50px 20px 50px 50px;
+                }
+
+                .img-preview {
+                    margin-bottom: 16px;
+                    height: 352px;
+                    border: 1px solid #d5d5d5;
+                    box-sizing: border-box;
+                    position: relative;
+                    text-align: center;
+                }
+
+                .form-row .btn-upload {
+                    width: 200px;
+                }
+
+                .form-row .btn {
+                    background-color: #0052d9;
+                    color: #fff;
+                    line-height: 26px;
+                    text-align: center;
+                    border-radius: 3px;
+                    display: inline-block;
+                    vertical-align: bottom;
+                }
+
+                .img-analysis {
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                }
+
+                .inputfile {
+                    width: .1px;
+                    height: .1px;
+                    opacity: 0;
+                    overflow: hidden;
+                    position: absolute;
+                    z-index: -1;
+                }
+
+                .disabled {
+                    opacity: .5;
+                    filter: alpha(opacity=50);
+                    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=50)";
+                    cursor: default;
+                    -webkit-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                }
+
+                .hidden {
+                    display: none !important;
+                }
+
+                .form-row .imgurl {
+                    display: inline-block;
+                    position: relative;
+                    vertical-align: middle;
+
+                }
+
+                .demo .form-row .ui-input {
+                    padding-right: 120px;
+                }
+
+                .demo-opt .imgurl .ui-input {
+                    width: 357px;
+                }
+
+                .ui-input {
+                    position: relative;
+                    display: inline-block;
+                    box-sizing: border-box;
+                    vertical-align: top;
+                    overflow: hidden;
+                    padding: 0 10px;
+                    font-size: 14px;
+                }
+
+
+                .tips {
+                    font-size: 12px;
+                    color: #b2b2b2;
+                    margin-top: 10px;
+                }
+
+                .jmod-network-url {
+                    width: 100%;
+                    height: 40px;
+                }
+
+                body {
+                    position: relative;
+                    font: 12px/1.5 microsoft yahei, arial, sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                    background-color: #f8f8f8;
+                    min-width: 1200px;
+                    color: #323232;
+                    min-height: 100%;
+                    box-sizing: border-box;
+                }
+
+            </style>
+            <meta http-equiv="Pragma" content="no-cache">
+            <meta http-equiv="Cache-Control" content="no-cache">
+            <meta http-equiv="Expires" content="0">
+        </head>
+        <body>
+        <form action="{% url 'imgDetect' %}" enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+
+            {#            <div><input type="file" name="file"></div>#}
+            {#            <div><input type="submit"></div>#}
+            <div class="tab-cont jmod-face-detect" style="display: block;">
+                <div class="demo-opt demo-box jmod-uploader-wrapper">
+
+
+                    <div class="img-preview jmod-preview" id="preview">
+                        <label class="demo-rs-label">检测图片</label>
+                        <p class="err-tip jmod-err-tip"></p>
+                        <div class="jmod-img-result" style="display:inline-block;">
+
+                            <div class="img-analysis">
+                                <img src="../../static/media/img/{{ img.img }}"
+                                     style="width: 100%; height: 100%; margin-top: 0px;"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <span class="btn btn-upload jmod-upload-disable disabled hidden">本地上传</span>
+                        <div><input type="hidden" name="username" VALUE={{ request.session.user_name }}></div>
+                        <input type="file" name="file" id="file_1" class="inputfile jmod-file"
+                               _stat_click_id="demo_uploadbtn" _stat_action_obj="detect">
+
+                        <label for="file_1" class="btn btn-upload jmod-upload">本地上传</label>
+                        <label>或</label>
+                        <span class="imgurl">
+                        <div class="ui-input">
+                          <input type="text" class="jmod-network-url" placeholder="输入网络图片URL">
+                          <div class="ui-input-bg"></div>
+                        </div>
+                        <input type="submit" class="btn btn-test jmod-detect"
+                               _stat_click_id="demo_uploadbtn" _stat_action_obj="detect"></input>
+                      </span>
+                    </div>
+                    <p class="tips">提示：图片大小不超过1M，请保证需要识别部分为图片主体部分</p>
+                </div>
+                <div class="demo-rs demo-box jmod-result-wrapper">
+                    <div class="jmod-result">
+                        <label class="demo-rs-label">检测结果</label>
+                        <img src="../../static/media/deimg/img/{{ img.img }}"
+                             style="width: auto; height: 100%; margin-top: 0px;">
+                    </div>
+                    <div class="ui-loading jmod-result-loading hidden">
+                    </div>
+                </div>
+            </div>
+        </form>
+        </body>
+        </html>
+        <script>
+
+        </script>
+    {% else %}
+        <h1>你尚未登录，只能访问公开内容！</h1>
+    {% endif %}
+{% endblock %}

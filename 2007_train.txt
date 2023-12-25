@@ -1,0 +1,1 @@
+D:\Code\Django_learn\djangoProject/VOCdevkit/VOC2007/JPEGImages/001.jpg
